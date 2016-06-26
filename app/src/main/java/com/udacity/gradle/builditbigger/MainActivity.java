@@ -11,14 +11,11 @@ import com.udacity.gradle.jokeactivity.JokeActivity;
 
 
 public class MainActivity extends ActionBarActivity {
-    private JokeProvider jokeProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        jokeProvider = new JokeProvider();
     }
 
 
@@ -45,9 +42,15 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void tellJoke(View view){
-        Intent intent = new Intent(this, JokeActivity.class);
-        intent.putExtra(JokeActivity.EXTRA_JOKE, jokeProvider.getRandomJoke());
-        startActivity(intent);
+        new EndpointAsyncTask(new EndpointAsyncTask.Callback() {
+            @Override
+            public void onResult(String joke) {
+                Intent intent = new Intent(MainActivity.this, JokeActivity.class);
+                intent.putExtra(JokeActivity.EXTRA_JOKE, joke);
+                startActivity(intent);
+            }
+        }).execute();
+
         //Toast.makeText(this, jokeProvider.getRandomJoke(), Toast.LENGTH_SHORT).show();
     }
 
